@@ -369,8 +369,92 @@
 
         // EXERCICE : refaire cette condition des couleurs switch mais en if / elseif / else 
 
+        $couleur = "jaune";
 
+        if ($couleur == "bleu") {
+            echo "Vous aimez le bleu<br>";
+        } elseif ($couleur == "rouge") {
+            echo "Vous aimez le rouge<br>";
+        } elseif ($couleur == "vert") {
+            echo "Vous aimez le vert<br>";
+        } else {
+            echo "Vous n'aimez ni le bleu, ni le rouge, ni le vert<br>";
+        }
 
+        echo "<h2>08 - Fonctions prédéfinies</h2>";
+
+        // Liste des fonctions/méthodes prédéfinies de PHP, il en existe des milliers :  https://www.php.net/manual/fr/indexes.functions.php 
+
+        // Pour utiliser une fonction nous devons connaitre le nombre de param attendu par cette fonction et leur type et leur ordre
+                // Et puis la valeur de retour/sortie de la fonction (est ce que ce sera un boolean ? un string ? ou autre chose ?)
+
+                // Fonction date() 
+                // Permet d'afficher la date du jour en choisissant le format attendu 
+
+        // echo time(); // time() me retourne le timestamp actuel 
+                    // timestamp = le nombre de secondes écoulées depuis le 1er janvier 1970 minuit UTC Time, c'est ce qu'on considère être l'an zéro de l'informatique uniformisée 
+
+        date_default_timezone_set("Europe/Paris");
+
+        echo "Nous sommes le : " . date("d/m/Y") . " et il est : " . date("H:i:s") . "<hr>";
+
+        // strlen() / iconv_strlen() 
+        // Fonction prédéfinie permettant de compter le nombre de caractères dans une chaine3
+        // echo strlen("bônjöùr") . "<br>";
+        // echo strlen("東京日本語") . "<br>";
+        // echo iconv_strlen("bônjöùr") . "<br>";
+        echo iconv_strlen("東京日本語") . "<br>";
+
+        // ATTENTION strlen() compte le nombre d'octets (en fonction des encodages, des accents etc, cela peut ne pas correspondre avec le nombre réel de caractères)
+        // On préfèrera donc utiliser iconv_strlen pour compter véritablement le nombre de caractère
+
+        // Beaucoup de fonctions is_qqchoz  permettant de vérifier les types de nos variables 
+        if (is_integer($a1)) {
+            echo "Oui c'est un integer";
+        } else {
+            echo "Non ce n'est pas un integer";
+        }
+
+        $prenom = "pierre";
+        echo ucfirst($prenom);
+
+        separateur();
+
+        echo "<h2>08 - Fonctions utilisateurs</h2>";
+
+        // Les fonctions utilisateurs = les fonctions développées par nos soins 
+
+        // Fonction très simple permettant d'afficher 3 hr 
+        function separateur(): void
+        {
+            echo "<hr><hr><hr>";
+        }
+
+        separateur();
+        separateur();
+
+        // Fonction avec des params 
+        function dire_bonjour(string $qui): string
+        {
+            return "Bonjour $qui, bienvenue sur notre site<hr>";
+        }
+
+        echo dire_bonjour("Pierra");
+        $prenom = "Jimmy";
+        echo dire_bonjour($prenom);
+
+        // Fonction pour calculer la TVA, le prix TTC
+        function applique_tva(int $prix): string
+        {
+            return "Le montant TTC pour le prix $prix est de : " . ($prix * 1.2) . "€<hr>"; // Pour la tva à 20
+        }
+
+        echo applique_tva(500);
+
+        // EXERCICE : refaire une fonction similaire MAIS permettant de choisir aussi le taux de TVA à appliquer
+                // Attention, on veut saisir le taux sous forme d'entier ou de float (pour saisir 30 pour 30% de tva par exemple)
+
+        // Une fois terminé, refaire la même fonction mais considérer que la saisie du taux est facultative, auquel cas, ce sera le taux de 20% par défaut
 
 
 
