@@ -482,10 +482,138 @@
 
         // EXERCICE : Refaire la fonction en météo en gérant "au" printemps plutôt que "en" printemps ainsi que le s sur degré en fonction de la valeur de la température 
 
+        function meteo2(string $saison, float $temperature): string
+        {
+            if ($saison == "printemps") {
+                $debut = "Nous sommes au " . $saison;
+            } else {
+                $debut = "Nous sommes en " . $saison;
+            }
+
+            if ($temperature >= -1 && $temperature <= 1) {
+                $suite = " et il fait " . $temperature . " degré<hr>";
+            } else {
+                $suite = " et il fait " . $temperature . " degrés<hr>";
+            }
+
+            return $debut . $suite;
+        }
+
+        echo meteo2("été", 35);
+        echo meteo2("printemps", 22);
+        echo meteo2("hiver", 1);
+        echo meteo2("automne", 15);
+
+        function meteo3(string $saison, float $temperature): string
+        {
+            $prep = ($saison == "printemps") ? "au" : "en";
+            $s = (abs($temperature) <= 1) ? "" : "s";
+
+            return "Nous sommes $prep $saison et il fait $temperature degré$s <hr>";
+        }
+
+        echo meteo3("été", 35);
+        echo meteo3("printemps", 22);
+        echo meteo3("hiver", 1);
+        echo meteo3("automne", 15);
 
 
+        // Environnement (scope)
+        // Global : Le script complet
+        // Local : à l'intérieur d'un "bloc" en fait à l'intérieur des fonctions, des classes, des méthodes 
+
+        // L'existence d'un élément dépend de son environnement 
+        // Une variable déclarée dans un espace local (les accolades de la déclaration d'une fonction) n'existe QUE dans cette fonction 
+
+        separateur();
+
+        $animal = "chat";
+
+        echo $animal . "<br>";
+
+        function foret()
+        {
+            $animal = "chien";
+            return $animal;
+        }
+
+        echo $animal . "<br>"; // chat
+        foret(); // pas d'affichage, j'ai pas fais de echo, il ne se passe rien, il y a un return de la valeur de la variable locale $animal, donc le return d'un string valant "chien", mais je ne le traite pas, donc il ne se passe rien du tout ! Le string est perdu dans le code 
+        echo $animal . "<br>"; // chat 
+        echo foret() . "<br>"; // chien
+        echo $animal . "<br>"; // chat
+        $animal = foret(); // Changement de valeur de la variable globale
+        echo $animal . "<br>"; // chien
+
+        $pays = "France"; // variable globale 
+
+        function affiche_pays()
+        {
+            global $pays;
+            $pays = "Japon";
+        }
+
+        echo $pays;
+        affiche_pays();
+        echo $pays;
+
+        separateur();
+
+        function identite(string|null $nom, ?int $age = 35, ?int $cp = 64000): string
+        {
+            return "$nom a $age ans et habite dans le $cp <hr>";
+        }
+
+        echo identite("Pierra", 38);
+
+        echo identite(nom: "Pierra", cp: 47000);
+        // Depuis PHP 8 on peut appeler les params par leur nom, ce qui évite de citer tous les params facultatif (par exemple si j'ai 10 param facultatif et que je veux renseigner uniquement le dernier, je n'ai pas besoin de renseigner les 9 précédents, j'appelle simplement ce dernier param par son nom)
 
 
+        echo "<h2>09 - Structure itérative : Boucles</h2>";
+
+        // Plusieurs outils de boucle en PHP 
+
+        // Boucle for = boucle exclusivement à compteur numérique 
+
+        // 3 infos sont nécessaires pour lancer la boucle, un compteur, une condition, une incrémentation/décrementation 
+
+        for ($i = 0; $i < 10; $i++) {
+            echo "$i ";
+        }
+
+        separateur();
+
+        // Boucle while = boucle en fonction d'une condition, pas forcément numérique 
+        $i = 0;
+        while ($i < 10) {
+            echo "$i ";
+            $i++;
+        }
+        separateur();
+
+        $i = 0;
+        while ($i < 100) {
+            echo "$i ";
+            if ($i == 20) break; // break permet de stopper totalement la boucle alors que "continue" permet de stopper le tour en cours 
+            $i++;
+        }
+
+        // Exercice 1
+        // Afficher des nombres allant de 1 à 100 en séparant les chiffres par des tirets. 
+
+        // Exercice 2
+        // Afficher des nombres allant de 1 à 100 avec le chiffre 50 en rouge.
+
+        // Exercice 3
+        // Afficher des nombres allant de 2000 à 1930.
+
+        // Exercice 4
+        // Afficher le titre suivant 10 fois : <h1>Titre à afficher 10 fois</h1>
+
+        // Exercice 5
+        // Afficher le titre suivant "<h1>Je m'affiche pour la Nème fois</h1>".
+        // Remplacer le N avec la valeur de $i (tour de boucle)
 
 
 
