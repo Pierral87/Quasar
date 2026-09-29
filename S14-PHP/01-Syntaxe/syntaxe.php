@@ -386,13 +386,13 @@
         // Liste des fonctions/méthodes prédéfinies de PHP, il en existe des milliers :  https://www.php.net/manual/fr/indexes.functions.php 
 
         // Pour utiliser une fonction nous devons connaitre le nombre de param attendu par cette fonction et leur type et leur ordre
-                // Et puis la valeur de retour/sortie de la fonction (est ce que ce sera un boolean ? un string ? ou autre chose ?)
+        // Et puis la valeur de retour/sortie de la fonction (est ce que ce sera un boolean ? un string ? ou autre chose ?)
 
-                // Fonction date() 
-                // Permet d'afficher la date du jour en choisissant le format attendu 
+        // Fonction date() 
+        // Permet d'afficher la date du jour en choisissant le format attendu 
 
         // echo time(); // time() me retourne le timestamp actuel 
-                    // timestamp = le nombre de secondes écoulées depuis le 1er janvier 1970 minuit UTC Time, c'est ce qu'on considère être l'an zéro de l'informatique uniformisée 
+        // timestamp = le nombre de secondes écoulées depuis le 1er janvier 1970 minuit UTC Time, c'est ce qu'on considère être l'an zéro de l'informatique uniformisée 
 
         date_default_timezone_set("Europe/Paris");
 
@@ -452,12 +452,35 @@
         echo applique_tva(500);
 
         // EXERCICE : refaire une fonction similaire MAIS permettant de choisir aussi le taux de TVA à appliquer
-                // Attention, on veut saisir le taux sous forme d'entier ou de float (pour saisir 30 pour 30% de tva par exemple)
+        // Attention, on veut saisir le taux sous forme d'entier ou de float (pour saisir 30 pour 30% de tva par exemple)
 
         // Une fois terminé, refaire la même fonction mais considérer que la saisie du taux est facultative, auquel cas, ce sera le taux de 20% par défaut
 
+        function applique_tva_taux(int $prix, ?float $taux = 20): string
+        {
+            return "Le montant TTC pour le prix $prix avec le taux de $taux % est de : " . ($prix * (1 + $taux / 100)) . "€<hr>"; // Pour la tva à 20
+        }
 
+        echo applique_tva_taux(100, 5.5);
+        echo applique_tva_taux(1000);
 
+        // Fonction affichage meteo basique 
+        function meteo(string $saison, float $temperature): string
+        {
+            $debut = "Nous sommes en " . $saison;
+            $suite = " et il fait " . $temperature . " degré(s)<hr>";
+
+            return $debut . $suite;
+        }
+
+        separateur();
+
+        echo meteo("été", 35);
+        echo meteo("printemps", 22);
+        echo meteo("hiver", 1);
+        echo meteo("automne", 15);
+
+        // EXERCICE : Refaire la fonction en météo en gérant "au" printemps plutôt que "en" printemps ainsi que le s sur degré en fonction de la valeur de la température 
 
 
 
