@@ -601,19 +601,194 @@
 
         // Exercice 1
         // Afficher des nombres allant de 1 à 100 en séparant les chiffres par des tirets. 
-
+        for ($i = 1; $i < 101; $i++) {
+            echo "$i";
+            if ($i < 100) {
+                echo " - ";
+            }
+        }
+        echo "<br>";
         // Exercice 2
         // Afficher des nombres allant de 1 à 100 avec le chiffre 50 en rouge.
+        $i = 1;
+        while ($i < 101) {
+            if ($i == 50) {
+                echo '<span style="color:red;">' . $i . ' </span>';
+            } else {
+                echo "$i ";
+            }
 
+            $i++;
+        }
+
+        separateur();
         // Exercice 3
         // Afficher des nombres allant de 2000 à 1930.
+        $i = 2000;
+        while ($i > 1929) {
+            echo "$i ";
+            $i--;
+        }
 
         // Exercice 4
         // Afficher le titre suivant 10 fois : <h1>Titre à afficher 10 fois</h1>
+        // for ($i = 0; $i < 10; $i++) {
+        //     echo "<h2>Titre à afficher 10 fois</h2>";
+        // }
 
         // Exercice 5
         // Afficher le titre suivant "<h1>Je m'affiche pour la Nème fois</h1>".
         // Remplacer le N avec la valeur de $i (tour de boucle)
+        for ($i = 1; $i < 11; $i++) {
+            $suffixe = ($i == 1) ? "ère" : "ème";
+            echo "<h2>Je m'affiche pour la $i$suffixe fois</h2>";
+        }
+
+        echo "<h2>10 - Tableaux de données Array</h2>";
+        // Array est un nouveau type de données
+        // Une variable de type array, nous permet de conserver un ensemble de valeur 
+        // Un array est toujours composé de deux colonnes 
+        // C'est une association clé = valeur 
+
+        // Pour piocher dans un array on appellera l'index/clé  pour en récupérer la valeur 
+
+        // Déclaration d'un tableau array 
+        $tabJours = array("lundi", "mardi", "mercredi", "jeudi", "vendredi");
+
+        // echo $tabJours; // Error, Array to string conversion
+        // Pour voir l'intégralité d'un array je ne peux pas utiliser echo
+
+        // Pour ça on utilisera plutôt deux outils de contrôle pour vérifier les contenus des array et des objets 
+        // var_dump et print_r  
+
+        var_dump($tabJours);
+
+        echo "<pre>";
+        print_r($tabJours);
+        echo "</pre>";
+
+        // Si je veux afficher, mercredi, comment je fais ? 
+
+        echo $tabJours[2]; // On appelle l'indice de mercredi (c'est 2) entre crochet sur la var qui contient le array entier 
+
+        array_push($tabJours, "samedi", "dimanche");
+        var_dump($tabJours);
+
+        // Autres façons de déclarer un tableau 
+        $tabMois = ["janvier", "fevrier", "mars", "avril"];
+
+        var_dump($tabMois);
+
+        // Autres façons pour rajouter des éléments 
+        $tabMois[] = "mai";
+        $tabMois[] = "juin";
+
+        var_dump($tabMois);
+
+        $tabFruits[] = "fraises"; // Premier appel de tabFruits avec cette syntaxe, ça crée le array
+        $tabFruits[] = "bananes"; // Ensuite ça se contente de rajouter
+        $tabFruits[] = "pommes";
+
+        var_dump($tabFruits);
+
+        // Pour connaitre le nombre d'éléments contenu dans un array, deux fonctions identiques : 
+        // count() et sizeof() 
+        echo "Taille du tableau des fruits : " . count($tabFruits) . "<br>";
+        echo "Taille du tableau des fruits : " . sizeof($tabFruits) . "<br>";
+
+        // Si je veux afficher la totalité du tableau ?
+        // En combinant les indices numériques ? Et la taille du tableau ? 
+        // Une boucle numérique !
+        separateur();
+
+        echo "<ul>";
+        for ($i = 0; $i < count($tabJours); $i++) {
+            echo "<li>" . $tabJours[$i] . "</li>";
+        }
+        echo "</ul>";
+
+        separateur();
+
+        // Il est possible de choisir nous même les index et aussi d'avoir des index en chaine de caractères 
+        $membre = array("pseudo" => "Admin", "email" => "admin@mail.fr", "age" => 20, "date_inscription" => "2020-01-01");
+
+        var_dump($membre);
+
+        echo $membre['pseudo'] . "<br>";
+        $membre['ville'] = "Bordeaux";
+        $membre["departement"] = 33;
+        var_dump($membre);
+
+        // Sur ce dernier tableau, les index ne sont plus numériques donc je ne peux plus faire ma boucle for qui se sert du compteur pour appeler un à un les id du array...
+
+        // Pas grave ! 
+
+        // On a un nouvel outil spécifique pour les array (et les objets), c'est la boucle foreach()
+        // La boucle foreach permet de parcour l'intégralité d'un tableau 
+
+        // Deux syntaxes possibles, l'une va s'intéresser à récupérer uniquement les valeurs du array, l'autre va aussi récupérer les noms des id 
+
+        separateur();
+
+        foreach ($membre as $info) { // Ici une seule variable après le "as", cette variable appelée $info va récupérer à chaque tour de boucle, la valeur des id du array 
+            echo " - $info<br>";
+        }
+
+        separateur();
+
+        foreach ($membre as $id => $info) { // Ici, après as j'ai deux variables, la première représentera le nom de l'id, la deuxieme la valeur 
+            if ($id != "ville") {
+                echo "- $id : $info <br>";
+            }
+        }
+
+        // On peut avoir également des array à plusieurs niveaux
+        // On appelle ça en français des array multidimensionnel 
+        // Là mon array $products (au pluriel) contient plusieurs "$product" (au singulier)
+        $products = array(
+            array("nom" => "tshirt", "prix" => 20),
+            array("nom" => "casquette", "prix" => 10),
+            array("nom" => "pantalon", "prix" => 30),
+        );
+
+        var_dump($products);
+
+        // Lorsque je veux piocher dans un array à deux niveaux, je fais une succession de crochets appelant les indices un à un
+        // On entre dans les niveaux du array petit à petit
+        echo $products[1]["nom"];
+        separateur();
+
+        // D'où l'appelation logique de notre variable récupérant les info du tour foreach sur products, en product 
+        foreach($products as $product){
+            echo $product["nom"];
+            echo $product["prix"];
+            echo "<br>";
+        }
+
+        echo "<h2>11 - Inclusion de fichier</h2>";
+        // Je vais créer un fichier séparé à la même position que celui ci :) 
+        // On va l'appeler _exemple.php
+
+        // include & require : sont deux instructions qui nous permettent d'appeler le contenu d'un fichier extérieur et de le ramener dans ce fichier actuel 
+
+        // Ces deux instructions existent avec leurs variation _once : require_once  include_once   
+
+        echo "<b>Premier appel du fichier exemple avec include : </b><hr>";
+        include("_exemple.php");
+
+        separateur();
+        echo "<b>Deuxième appel du fichier exemple avec include_once : </b><hr>";
+        include_once("_exemple.php");
+
+        separateur();
+        echo "<b>Troisième appel du fichier exemple avec require : </b><hr>";
+        require("_exemple.php");
+
+        separateur();
+        echo "<b>Quatrième appel du fichier exemple avec require_once : </b><hr>";
+        require_once("_exemple.php");
+
+
 
 
 
