@@ -44,8 +44,10 @@ GET /api/users/
 GET /api/users/123
 
 En PHP, les paramètres envoyés via GET peuvent être récupérés avec la superglobale $_GET[], les superglobales en PHP sont toutes des arrays qui sont présents dans tous les scopes (global et local)
+
 Attention à la syntaxe $_NOMDELAGLOBAL (On découvrira plus tard POST, SESSION, COOKIE, FILES)
 ATTENTION AUSSI on considèra toute information venant de l'utilisateur comme non fiable et non sécurisée
+
 Pour ça, on vérifiera toujours l'intégrité des informations reçues au travers de GET, c'est à dire, on commencera toujours par un isset() de tous les champs attendus (et donc autorisés) dans nos params.
 Deuxieme étape, on fera en sorte de filtrer les valeurs autorisées (par exemple ici nous avons 3 catégories, on ne veut pas lancer un traitement si la catégorie demandée par l'utilisateur ne fait pas parti des 3 existantes)
 
