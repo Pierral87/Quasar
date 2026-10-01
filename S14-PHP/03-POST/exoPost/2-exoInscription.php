@@ -52,6 +52,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pseudo'], $_POST['ema
         $errors[] = "Le mot de passe doit faire au moins 6 caractères.";
     }
 
+    if (!preg_match("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$^", $password)){
+        $errors[] = "Le mot de passe doit contenir 1 maj 1 min 1 symbole 1 chiffre et min 8";
+    }
+
     if ($password !== $passwordConfirm) {
         $errors[] = "Les mots de passe ne correspondent pas.";
     }
