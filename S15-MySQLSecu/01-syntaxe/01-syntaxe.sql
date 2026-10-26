@@ -239,3 +239,91 @@ SELECT * FROM employes LIMIT 3;
 
 -- Ci dessous, la syntaxe de PostgreSQL, on peut l'utiliser aussi en MySQL ! 
 SELECT * FROM employes LIMIT 3 OFFSET 0;
+
+
+-- Affichage des employés avec leur salaire annuel 
+SELECT nom, prenom, service, salaire * 12 FROM employes;
+SELECT nom, prenom, service, salaire * 12 AS salaire_annuel FROM employes;
++----------+-------------+---------------+----------------+
+| nom      | prenom      | service       | salaire_annuel |
++----------+-------------+---------------+----------------+
+| Laborde  | Jean-pierre | direction     |          60000 |
+| Gallet   | Clement     | commercial    |          27600 |
+| Winter   | Thomas      | commercial    |          42600 |
+| Dubar    | Chloe       | production    |          22800 |
+| Fellier  | Elodie      | secretariat   |          19200 |
+| Grand    | Fabrice     | comptabilite  |          34800 |
+| Collier  | Melanie     | commercial    |          37200 |
+| Blanchet | Laura       | direction     |          54000 |
+| Miller   | Guillaume   | commercial    |          22800 |
+| Perrin   | Celine      | commercial    |          32400 |
+| Cottet   | Julien      | secretariat   |          16680 |
+| Vignal   | Mathieu     | informatique  |          30000 |
+| Desprez  | Thierry     | secretariat   |          18000 |
+| Thoyer   | Amandine    | communication |          25200 |
+| Durand   | Damien      | informatique  |          27000 |
+| Chevel   | Daniel      | informatique  |          37200 |
+| Martin   | Nathalie    | juridique     |          42600 |
+| Lagarde  | Benoit      | production    |          30600 |
+| Sennard  | Emilie      | commercial    |          21600 |
+| Lafaye   | Stephanie   | assistant     |          21300 |
++----------+-------------+---------------+----------------+
+-- AS nous permet de donner un surnom à la colonne lors de la récupération.
+
+
+--------------------- Fonctions d'agrégation ------------------------------------
+
+-- SUM() pour avoir la somme 
+-- La masse salariale annuelle de l'entreprise 
+SELECT SUM(salaire * 12) AS masse_salariale FROM employes;
++-----------------+
+| masse_salariale |
++-----------------+
+|          623580 |
++-----------------+
+
+-- AVG() la moyenne
+-- Affichage du salaire moyen de l'entreprise 
+SELECT AVG(salaire) AS salaire_moyen FROM employes;
++---------------+
+| salaire_moyen |
++---------------+
+|       2598.25 |
++---------------+
+
+-- ROUND() pour arrondir 
+-- ROUND(valeur) => arrondi à l'entier 
+-- ROUND(valeur, 1) => arrondi avec une décimale
+SELECT ROUND(AVG(salaire), 1) AS salaire_moyen FROM employes;
+
+-- COUNT() permet de compter le nombre de ligne d'une requête 
+-- Le nombre d'employés dans l'entreprise : 
+SELECT COUNT(*) AS nombre_employes FROM employes; -- COUNT() va faire un +1 pour chaque ligne de résultat 
++-----------------+
+| nombre_employes |
++-----------------+
+|              20 |
++-----------------+
+
+-- Le nombre de ocmmerciaux
+SELECT COUNT(*) AS nombre_commerciaux FROM employes WHERE service = "commercial";
+
+
+-- MIN() & MAX()
+-- salaire minimum 
+SELECT MIN(salaire) FROM employes;
++--------------+
+| MIN(salaire) |
++--------------+
+|         1390 |
++--------------+
+-- salaire maximum 
+SELECT MAX(salaire) FROM employes;
++--------------+
+| MAX(salaire) |
++--------------+
+|         5000 |
++--------------+
+
+-- EXERCICE : Affichez le salaire minimum ainsi que le prénom (simultanément dans une seule requête), de l'employé ayant ce salaire
+
