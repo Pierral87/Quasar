@@ -225,9 +225,136 @@ WHERE a.prenom = "Guillaume";
 
 
 -- EXERCICE 1 : Nous aimerions connaitre les dates de sortie et les dates de rendu pour les livres écrit par Alphonse Daudet 
+SELECT e.date_sortie, e.date_rendu, l.titre
+FROM emprunt e 
+INNER JOIN livre l  ON e.id_livre = l.id_livre 
+WHERE l.auteur = "Alphonse Daudet";
++-------------+------------+----------------+
+| date_sortie | date_rendu | titre          |
++-------------+------------+----------------+
+| 2016-12-12  | 2016-12-22 | Le Petit chose |
++-------------+------------+----------------+
 -- EXERCICE 2 : Qui a emprunté le livre "une vie" sur l'année 2016
+SELECT a.prenom 
+FROM emprunt e
+JOIN abonne a ON e.id_abonne = a.id_abonne 
+JOIN livre l ON e.id_livre = l.id_livre 
+WHERE l.titre = "Une vie"
+AND YEAR(date_sortie) = 2016;
++-----------+
+| prenom    |
++-----------+
+| Guillaume |
+| Chloe     |
++-----------+
 -- EXERCICE 3 : Nous aimerions connaitre le nombre de livre emprunté par chaque abonné 
+SELECT a.prenom, COUNT(*) AS nb_emprunts 
+FROM abonne a 
+JOIN emprunt e ON a.id_abonne = e.id_abonne 
+GROUP BY a.prenom;
++-----------+-------------+
+| prenom    | nb_emprunts |
++-----------+-------------+
+| Guillaume |           3 |
+| Benoit    |           3 |
+| Chloe     |           2 |
+| Laura     |           1 |
++-----------+-------------+
 -- EXERCICE 4 : Nous aimerions connaitre le nombre de livre emprunté à rendre par chaque abonné 
+SELECT a.prenom, COUNT(e.id_emprunt) AS nbr_a_rendre 
+FROM emprunt e 
+JOIN abonne a USING(id_abonne)
+WHERE e.date_rendu IS NULL 
+GROUP BY a.id_abonne 
+ORDER BY nbr_a_rendre DESC;
++-----------+--------------+
+| prenom    | nbr_a_rendre |
++-----------+--------------+
+| Chloe     |            1 |
+| Benoit    |            1 |
+| Guillaume |            1 |
++-----------+--------------+
 -- EXERCICE 5 : Qui (prenom) a emprunté Quoi (titre) et Quand (date_sortie) ?
+SELECT a.prenom, l.titre, e.date_sortie 
+FROM emprunt e 
+JOIN abonne a ON e.id_abonne = a.id_abonne 
+JOIN livre l ON e.id_livre = l.id_livre
+ORDER BY prenom;
++-----------+-------------------------+-------------+
+| prenom    | titre                   | date_sortie |
++-----------+-------------------------+-------------+
+| Benoit    | Bel-Ami                 | 2016-12-07  |
+| Benoit    | Les Trois Mousquetaires | 2017-01-02  |
+| Benoit    | Une vie                 | 2017-02-20  |
+| Chloe     | Une vie                 | 2016-12-11  |
+| Chloe     | Les Trois Mousquetaires | 2017-02-15  |
+| Guillaume | Une vie                 | 2016-12-07  |
+| Guillaume | La Reine Margot         | 2016-12-15  |
+| Guillaume | Une vie                 | 2026-10-27  |
+| Laura     | Le Petit chose          | 2016-12-12  |
++-----------+-------------------------+-------------+
 
 
+-------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------
+------------ JOINTURE EXTERNE (sans correspondance exigée) --------------------------------
+-------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------
+
+-- Enregistrez-vous dans la table abonné 
+INSERT INTO abonne (prenom) VALUES ("Pierra");
+SELECT * FROM abonne;
+
+
+-- Affichez tous les prénoms des abonnés SANS EXCEPTION ainsi que les id_livre qu'ils ont emprunté si ils ont emprunté des livres 
+SELECT a.prenom, e.id_livre 
+FROM abonne a 
+JOIN emprunt e USING(id_abonne);
++-----------+----------+
+| prenom    | id_livre |
++-----------+----------+
+| Guillaume |      100 |
+| Benoit    |      101 |
+| Chloe     |      100 |
+| Laura     |      103 |
+| Guillaume |      104 |
+| Benoit    |      105 |
+| Chloe     |      105 |
+| Benoit    |      100 |
+| Guillaume |      100 |
++-----------+----------+
+
+-- Avec ces requetes, nous n'apparaissont pas dans le resultat (le nouvel inscrit sans emprunt)
+-- C'est normal car nous n'avons pas encore de correspondance sur la table emprunt
+-- Pour récupérer l'intégralité d'une table et obtenir toutes les informations de cette table tout en rajoutant les correspondances s'il y en a, nous appellons ça une jointure EXTERNE
+
+-- ATTENTION les jointures ont un sens !!! 
+-- On peut faire une jointure externe avec un LEFT JOIN ou avec un RIGHT JOIN 
+-- La table au bout du sens de la jointure sera celle incluse en entier dans le résultat 
+SELECT a.prenom, e.id_livre 
+FROM abonne a LEFT JOIN emprunt e USING(id_abonne); -- Ici avec un EFT JOIN on considère que c'est de la table abonné que l'on souhaite l'entièreté des informations (meme si pas de correspondance dans la table emprunt)
++-----------+----------+
+| prenom    | id_livre |
++-----------+----------+
+| Guillaume |      100 |
+| Guillaume |      104 |
+| Guillaume |      100 |
+| Benoit    |      100 |
+| Benoit    |      105 |
+| Benoit    |      101 |
+| Chloe     |      105 |
+| Chloe     |      100 |
+| Laura     |      103 |
+| Pierra    |     NULL |
++-----------+----------+
+SELECT a.prenom, e.id_livre 
+FROM emprunt e RIGHT JOIN abonne a USING(id_abonne); -- (même chose mais écrit dans l'autre sens ! Avec un RIGHT JOIN)
+
+-- Jointe externe en excluant l'intersection (donc, que les abonnés sans emprunts)
+SELECT a.prenom 
+FROM abonne a LEFT JOIN emprunt e USING (id_abonne) 
+WHERE id_emprunt IS NULL;
+
+-- EXERCICE 1 : Affichez tous les livres sans exception puis les id_abonne ayant emprunté ces livres si c'est le cas
+-- EXERCICE 2 : Affichez tous les prénoms des abonnés et s'ils ont fait des emprunts, affichez les id_livre, auteur et titre
+-- EXERCICE 3 : Affichez tous les prénoms des abonnés et s'ils ont fait des emprunts, affichez les id_livre, auteur et titre ainsi que les livres non empruntés :)
