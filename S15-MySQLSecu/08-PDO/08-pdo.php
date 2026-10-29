@@ -45,7 +45,7 @@ echo "<h2>02 - Requêtes de type action (INSERT / UPDATE / DELETE)</h2>";
 // !!!!! ATTENTION !!!!! cette méthode est sensible aux injections SQL !!! Dans un vrai contexte, on fera toujours des requêtes préparées avec la méthode prepare() 
 
 
-// $stmt = $pdo->query("INSERT INTO employes (prenom, nom, salaire, sexe, date_embauche, service) VALUES ('Pierral', 'Lacaze', 12000, 'm', CURDATE(), 'Formation')");
+$stmt = $pdo->query("INSERT INTO employes (prenom, nom, salaire, sexe, date_embauche, service) VALUES ('Pierral', 'Lacaze', 12000, 'm', CURDATE(), 'Formation')");
 
 // var_dump($stmt);
 
@@ -227,7 +227,23 @@ echo "Premier employé de la BDD : " . $data[0]["prenom"] . "<hr>";
 
 //  EXERCICE : Affichez les noms et prénoms des employés dans une liste ul li 
 // Le faire avec fetch 
+$stmt = $pdo->query("SELECT nom, prenom FROM employes");
+echo "<ul>";
+while($data = $stmt->fetch(PDO::FETCH_ASSOC)){
+    echo "<li>" . $data["nom"] . " " . $data["prenom"] . "</li>";
+}
+echo "</ul><hr><hr>";
+
 // Le faire aussi avec fetchAll
+$stmt = $pdo->query("SELECT nom, prenom FROM employes");
+$employes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+echo "<ul>";
+foreach($employes AS $employe) {
+    echo "<li>" . $employe["nom"] . " " . $employe["prenom"] . "</li>";
+
+}
+echo "</ul><hr><hr>";
+
 
 
 echo "<h2>06 - Requêtes préparées pour se protéger des injections SQL !</h2>";

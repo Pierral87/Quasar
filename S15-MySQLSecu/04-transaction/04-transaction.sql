@@ -8,7 +8,7 @@
 
 USE entreprise_quasar;
 
-START TRANSACTION; -- démarre une tranasction 
+START TRANSACTION; -- démarre une transaction 
 
 SELECT * FROM employes; -- On vérifie nos données 
 
