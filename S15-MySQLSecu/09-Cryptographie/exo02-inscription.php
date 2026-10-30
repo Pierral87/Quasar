@@ -32,3 +32,161 @@
             - > keyfile.key : Enregistre la clé générée dans un fichier nommé keyfile.key.
 
     */
+
+            
+                try {
+                    $host = 'mysql:host=localhost;dbname=cryptotest'; // hôte + bdd
+                    $login = 'root'; // login
+                    $password = ''; // mdp
+                    $options = array(
+                        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // gestion des erreurs                        
+                    );
+                
+                
+                    // Création de l'objet :
+                    $pdo = new PDO($host, $login, $password, $options);
+                } catch (Exception $e) {
+                    die("Site hors service");
+                }
+                
+                
+                session_start();
+                
+                
+                $errors = [];
+                $success = "";
+                
+                if ($_SERVER['REQUEST_METHOD'] === 'POST' & isset($_POST['pseudo'], $_POST['email'], $_POST['password'], $_POST['password_confirm'])) {
+                    $pseudo = trim($_POST['pseudo']);
+                    $email = trim($_POST['email']);
+                    // $email = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
+                    $password = $_POST['password'];
+                    $passwordConfirm = $_POST['password_confirm'];
+                
+                    // Contrôles de validation
+                    if (empty($pseudo)) {
+                        $errors[] = "Le pseudo est requis.";
+                    }
+                
+                    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                        $errors[] = "L'email n'est pas valide.";
+                    }
+                
+                    if (iconv_strlen($password) < 6) {
+                        $errors[] = "Le mot de passe doit faire au moins 6 caractères.";
+                    }
+                
+                    if ($password !== $passwordConfirm) {
+                        $errors[] = "Les mots de passe ne se correspondent pas.";
+                    }
+                
+                    // - disponibilité du pseudo
+                    // Pour savoir si le pseudo est disponible, nous devons faire une requete en BDD, si on récupère une ligne, le pseudo est indisponible sinon ok
+                    $verif_pseudo = $pdo->prepare("SELECT * FROM membre WHERE pseudo = :pseudo"); // on prépare la requete
+                    $verif_pseudo->bindParam(':pseudo', $pseudo, PDO::PARAM_STR); // on rattache la variable contenant la valeur attendue au marqueur nominatif de la requete préparée
+                    $verif_pseudo->execute(); // on exécute
+                
+                    // rowCount() nous renvoie le nombre de ligne obtenue. Si on a plus de 0 ligne, alors le pseudo est indisponible
+                    if ($verif_pseudo->rowCount() > 0) {
+                        // cas d'erreur
+                        $errors[] = "Pseudo déjà pris";
+                    }
+                
+                    // Si pas d'erreurs, on enregistre l'utilisateur
+                    if (empty($errors)) {
+                
+                        $hashedPassword = password_hash($password, PASSWORD_ARGON2ID);
+                        $keyPath = 'keyfile.key'; // Chemin vers le fichier contenant la clé
+                        $key = base64_decode(trim(file_get_contents($keyPath))); // Lire et décoder la clé
+                        if ($key === false) {
+                            die("Problème d'inscription");
+                        }
+                
+                        // Génération d'un IV (vector d'initialisation) sécurisé
+                        $iv = random_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+                
+                        // Chiffrement
+                        $encryptedEmail = openssl_encrypt($email, 'aes-256-cbc', $key, 0, $iv);
+                        // Encodage en base64 pour stockage ou transmission
+                        $encryptedEmail = base64_encode($iv . $encryptedEmail);
+                
+                
+                        try {
+                
+                            // on lance le insert into :
+                            $enregistrement = $pdo->prepare("INSERT INTO membre (pseudo, email, password) VALUES (:pseudo, '$encryptedEmail', '$hashedPassword')");
+                            // Pour le statut :
+                            // 1 = membre
+                            // 2 = admin
+                            $enregistrement->bindParam(':pseudo', $pseudo, PDO::PARAM_STR);
+                            // $enregistrement->bindParam(':email', $email, PDO::PARAM_STR);
+                            $enregistrement->execute();
+                        } catch (Exception $e) {
+                            $errors[] = "Erreur d'inscriptions.";
+                        }
+                
+                        header("location:exo02-validSub.php?pseudo=$pseudo");
+                        $success = "Inscription réussie ! Vous pouvez maintenant vous connecter.";
+                    }
+                }
+                ?>
+                
+                <!DOCTYPE html>
+                <html lang="fr">
+                
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Inscription</title>
+                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+                </head>
+                
+                <body>
+                    <div class="container mt-5">
+                        <div class="row">
+                            <div class="col-md-6 mx-auto">
+                                <h1>Inscription</h1>
+                
+                                <?php if (!empty($errors)): ?>
+                                    <div class="alert alert-danger">
+                                        <ul>
+                                            <?php foreach ($errors as $error): ?>
+                                                <li><?= $error ?></li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    </div>
+                                <?php endif; ?>
+                
+                                <?php if ($success): ?>
+                                    <div class="alert alert-success">
+                                        <?= $success ?>
+                                    </div>
+                                <?php endif; ?>
+                
+                                <form action="" method="post">
+                                    <div class="mb-3">
+                                        <label for="pseudo" class="form-label">Pseudo</label>
+                                        <input type="text" class="form-control" id="pseudo" name="pseudo" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="password" class="form-label">Mot de passe</label>
+                                        <input type="password" class="form-control" id="password" name="password" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="password_confirm" class="form-label">Confirmer le mot de passe</label>
+                                        <input type="password" class="form-control" id="password_confirm" name="password_confirm" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">S'inscrire</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+                </body>
+                
+                </html>

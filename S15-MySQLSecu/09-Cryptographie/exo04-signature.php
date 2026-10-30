@@ -33,3 +33,25 @@ Si le contenu est modifié, la vérification échoue.
             - Afficher un message pour indiquer que la signature est valide ou invalide
 
 */
+
+// Charger la clé privée
+$privateKey = file_get_contents('private_key.pem');
+
+// Chemin du fichier à signer
+$fileToSign = 'document.pdf';
+
+// Lire le contenu du fichier
+$fileContent = file_get_contents($fileToSign);
+
+// Créer une signature
+openssl_sign($fileContent, $signature, $privateKey, OPENSSL_ALGO_SHA256);
+
+// Enregistrer la signature dans un fichier séparé
+try {
+    file_put_contents('document.pdf.signature', base64_encode($signature));
+    echo "Signature créée et sauvegardée dans 'document.pdf.signature'.\n";
+} catch (Exception $e) {
+    echo "Problème de signature";
+}
+
+
