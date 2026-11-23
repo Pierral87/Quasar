@@ -69,7 +69,7 @@ class Utilisateur
     }
 }
 
-
+// $utilisateur = new Utilisateur();
 // $utilisateur->nom = "Pierra";
 // $utilisateur->email = "pierra@mail.com";
 
@@ -80,5 +80,11 @@ $utilisateur = new Utilisateur("Pierra", "pierra@mail.com");
 // Cela m'évite de les saisir un par un comme ci dessous
 // $utilisateur->setNom("Pierra");
 // $utilisateur->setEmail("pierra@mail.com");
+
+// $utilisateur->setNom("Pierro");
+
+// echo "Nom de l'utilisateur actuellement sélectionné : " . $utilisateur->getNom();
+
+
 
 echo $utilisateur->saluer();
