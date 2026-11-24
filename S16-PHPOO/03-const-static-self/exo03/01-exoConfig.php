@@ -16,3 +16,38 @@ Objectif : Créer une classe Config pour gérer la configuration générale d'un
         Une méthode statique getAppName() qui retourne le nom de l'application.
 
 */ 
+
+class Config {
+    // Constante définissant le nom de l'application
+    const APP_NAME = "Mon Application Web";
+
+    // Paramètres globaux
+    protected static $settings = [
+        'debug' => true,
+        'database' => 'mysql:host=localhost;dbname=mydb',
+    ];
+
+    // Méthode pour définir un paramètre
+    public static function setSetting(string|int $key, mixed $value) {
+        self::$settings[$key] = $value;
+    }
+
+    // Méthode pour obtenir un paramètre
+    public static function getSetting(string|int $key) {
+        return isset(self::$settings[$key]) ? self::$settings[$key] : null;
+    }
+
+    // Méthode pour obtenir le nom de l'application
+    public static function getAppName() {
+        return self::APP_NAME;
+    }
+}
+
+// Utilisation
+echo "Nom de l'application : " . Config::getAppName() . "<br>";
+echo "Mode debug : " . (Config::getSetting('debug') ? 'activé' : 'désactivé') . "<br>";
+
+// Mise à jour des paramètres
+Config::setSetting('debug', false);
+echo "Mode debug après mise à jour : " . (Config::getSetting('debug') ? 'activé' : 'désactivé') . "<br>";
+?>
