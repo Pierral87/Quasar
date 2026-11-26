@@ -87,3 +87,48 @@ echo __NAMESPACE__;
 // Par exemple PDO sans l'antislash il le cherche dans le namespace App
 // Avec l'antislash on sort du scope du namespace et on revient dans le global
 // $pdo = new \PDO("base");
+
+// Attention toutefois, sur une architecture plus avancée, on passe toujours par l'index, qui lui n'a pas de namespace, ce qui enlève completement cette problematique
+
+// Il est reccomandé de faire correspondre la structure des namespaces avec la structure de nos dossiers pour mieux organiser le projet 
+
+// Exemple : 
+    /*
+        - MonProjet/ 
+            - Modele/ 
+                - Utilisateur.php 
+            - Controller/ 
+                - UtilisateurController.php
+
+        Ainsi le fichier Utilisateur.php pourrait avoir le namespace MonProjet\Modele et UtilisateurController.php le namespace MonProjet\Controller   
+        En fonction des normes, on pourra dire que le namespace du dossier racine, est toujours le namespace "App"
+
+        Les namespaces sont généralement utilisés conjointement avec l'autoload (chapitre suivant) pour éviter de devoir inclure manuellement chaque fichier
+        Chaque classe que j'utilise chacune dans son fichier séparé devrait normalement être include/require, l'autoload va le faire pour nous et il fonctionnera avec les namespaces et du fait de la syntaxe avec les \ il va rentrer directement dans des dossiers
+
+        --- Pour ça on utilise la convention de nommage PSR-4 
+
+        - Le PSR-4 c'est une convention de nommage et d'organisation des fichiers dans un projet qui vise à standardiser l'autoloading des classes. Pour ça la structure est très claire pour mapper les namespaces aux dossiers et les classes aux fichiers 
+
+            - Chaque classe doit avoir un namespace qui correspond à sa structure de repertoire sur le serveur
+            - Le nom de la classe doit correspondre au nom du fichier dans lequel la classe est définie 
+            - Autoloading permettra de rentrer dans chaque dossier en rapport au nom des namespaces 
+
+            Point important de la PSR-4, c'est que l'on nommera un namespace racine qui sera mappé vers un dossier spécifique et ensuite on utilisera les noms des namespaces pour nom de dossier 
+
+                Par exemple : 
+                    Namespace : ProjetPierra\Controller 
+                    Class : UserController
+
+                    Le namespace ProjetPierra sera mappé vers un dossier nommé "src" 
+                        - src/ 
+                            - Controller/ 
+                                - UserController.php 
+
+            --- Bonnes pratiques : 
+                - Nommer les namespaces de façon logique : Organisez les classes par fonctionnalité 
+                    Par exemple on regroupe les Model dans un namespace et dossier Model, les controleurs dans Controller, nos propres classes custom dans MyClasses 
+                - On suit la norme PSR-4 avec le dossier racine puis ensuite des dossiers en rapport à nos namespaces 
+                - On évite les noms trop longs ou ambigus 
+
+    */
